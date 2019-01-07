@@ -54,7 +54,3 @@ class Game:
             self.turn = Game.TURNS[2]
         if Game.BOARD_PROTOCOL[self.turn] == 2:
             self.turn = Game.TURNS[1]
-
-g = Game()
-
-print(g)
