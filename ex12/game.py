@@ -17,8 +17,8 @@ class Game:
         for i in range(len(self.board)):
             for j in range(len(self.board[0])):
                 result += str(self.board[i][j])
-            result+= '\n'
-        return  result
+            result += '\n'
+        return result
 
     def make_move(self, column):
         if self.is_legal(column):
