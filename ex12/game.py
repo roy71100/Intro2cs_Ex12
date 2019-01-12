@@ -68,7 +68,6 @@ class Game:
         # check diagonal \
         for i in range(Game.BOARD_COLUMNS-1,2,-1):
             seq = self.return_sequence(-1, -1, i, Game.BOARD_ROWS - 1)
-            print("diag1: {}".format(seq))
             for p in Game.BOARD_PROTOCOL.keys():
                 if p != "empty":
                     if seq.count(Game.BOARD_PROTOCOL[p]) >= 4:
@@ -77,7 +76,6 @@ class Game:
 
         for i in range(Game.BOARD_ROWS-2, 2, -1):
             seq = self.return_sequence(-1, -1, Game.BOARD_COLUMNS-1, i)
-            print("diag: {}".format(seq))
             for p in Game.BOARD_PROTOCOL.keys():
                 if p != "empty":
                     if seq.count(Game.BOARD_PROTOCOL[p]) >= 4:
