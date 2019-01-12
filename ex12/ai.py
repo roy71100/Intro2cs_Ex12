@@ -16,7 +16,7 @@ class AI:
         """
         if self.game.get_winner() is None:
             guess = randint(0,len(self.game.board[0]))
-            while self.game.get_player_at(0, guess) is not None
+            while self.game.get_player_at(0, guess) is not None:
                 guess = randint(0,len(self.game.board[0]))
             return guess
         raise Exception("No possible AI moves")
