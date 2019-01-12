@@ -1,4 +1,7 @@
 class Game:
+    """
+    the Game class representing a game of 4 in a row.
+    """
     BOARD_COLUMNS = 7
     BOARD_ROWS = 6
     BOARD_PROTOCOL = {"empty": 0, "player 1": 1, 'player 2': 2}
@@ -6,6 +9,10 @@ class Game:
     TURNS = {1: 'player 1', 2: 'player 2'}
 
     def __init__(self):
+        """
+        the initializing method for the game class. creates a gamr object
+        containing a board, turn and status attribute.
+        """
         self.board = [
             [Game.BOARD_PROTOCOL['empty'] for i in range(Game.BOARD_COLUMNS)]
             for i in range(Game.BOARD_ROWS)]
@@ -13,6 +20,9 @@ class Game:
         self.status = Game.GAME_STATUS['running']
 
     def __str__(self):
+        """
+        a method for printing the state of the board for debugging.
+        """
         result = ''
         for i in range(len(self.board)):
             for j in range(len(self.board[0])):
@@ -21,6 +31,11 @@ class Game:
         return result
 
     def make_move(self, column):
+        """
+        a method receiving a column number, updating the board status if its
+        legal. otherwise, raising an exception "illegal move.".
+
+        """
         if self.is_legal(column):
             column_data = [row[column] for row in self.board]
             self.board[(len(column_data) - 1) - column_data[::-1].index(
@@ -31,24 +46,29 @@ class Game:
             raise Exception("illegal move.")
 
     def get_winner(self):
+        """
+        a method which checks whether there is a winner, and return the answer:
+        1 - player one won, 2- player two won, 0 - tie, None - still running.
+        :return:
+        """
         # check rows
-        for i in range(Game.BOARD_ROWS ):
+        for i in range(Game.BOARD_ROWS):
             seq = self.return_sequence(1, 0, 0, i)
-
             for p in Game.BOARD_PROTOCOL.keys():
                 if p != "empty":
                     if seq.count(Game.BOARD_PROTOCOL[p]) >= 4:
                         self.status = Game.GAME_STATUS[p]
                         return self.status
+
         # check columns
-        for i in range(Game.BOARD_COLUMNS ):
+        for i in range(Game.BOARD_COLUMNS):
             seq = self.return_sequence(0, 1, i, 0)
-
             for p in Game.BOARD_PROTOCOL.keys():
                 if p != "empty":
                     if seq.count(Game.BOARD_PROTOCOL[p]) >= 4:
                         self.status = Game.GAME_STATUS[p]
                         return self.status
+
         # check diagonal /
         for i in range(Game.BOARD_COLUMNS - 3):
             seq = self.return_sequence(1, -1, i, Game.BOARD_ROWS - 1)
@@ -57,7 +77,8 @@ class Game:
                     if seq.count(Game.BOARD_PROTOCOL[p]) >= 4:
                         self.status = Game.GAME_STATUS[p]
                         return self.status
-        for i in range(Game.BOARD_ROWS-2, 2, -1):
+
+        for i in range(Game.BOARD_ROWS - 2, 2, -1):
             seq = self.return_sequence(1, -1, 0, i)
             for p in Game.BOARD_PROTOCOL.keys():
                 if p != "empty":
@@ -66,7 +87,7 @@ class Game:
                         return self.status
 
         # check diagonal \
-        for i in range(Game.BOARD_COLUMNS-1,2,-1):
+        for i in range(Game.BOARD_COLUMNS - 1, 2, -1):
             seq = self.return_sequence(-1, -1, i, Game.BOARD_ROWS - 1)
             for p in Game.BOARD_PROTOCOL.keys():
                 if p != "empty":
@@ -74,25 +95,45 @@ class Game:
                         self.status = Game.GAME_STATUS[p]
                         return self.status
 
-        for i in range(Game.BOARD_ROWS-2, 2, -1):
-            seq = self.return_sequence(-1, -1, Game.BOARD_COLUMNS-1, i)
+        for i in range(Game.BOARD_ROWS - 2, 2, -1):
+            seq = self.return_sequence(-1, -1, Game.BOARD_COLUMNS - 1, i)
             for p in Game.BOARD_PROTOCOL.keys():
                 if p != "empty":
                     if seq.count(Game.BOARD_PROTOCOL[p]) >= 4:
                         self.status = Game.GAME_STATUS[p]
                         return self.status
 
+        # checking whether its a tie.
+        if sum(list(filter(lambda x: x == Game.BOARD_PROTOCOL['empty'],
+                           [item for sublist in self.board for item in
+                            sublist]))) > 0:
+            self.status = Game.GAME_STATUS['tie']
+            return self.status
+
+        #game still running
+        return Game.GAME_STATUS['running']
+
     def return_sequence(self, delta_x, delta_y, x, y):
+        """
+        a method receiving a direction (represented by delta_x and delta_y) and
+        a starting position, and return a list of values encountered upon
+        advancing that direction in the board matrix.
+        """
         seq = []
         while (
                     (Game.BOARD_COLUMNS - 1 >= x >= 0) and (
-                                0 <= y <= Game.BOARD_ROWS-1)):
+                                0 <= y <= Game.BOARD_ROWS - 1)):
             seq.append(self.board[y][x])
             x += delta_x
             y += delta_y
         return seq
 
     def get_player_at(self, row, col):
+        """
+        a method receiving a position on the matrix, and returns which player
+        is on that position: 1- player one, 2- player 2, 0- empty. the method
+        raise an exception if an illegal place was reached, "illegal location".
+        """
         if col <= Game.BOARD_COLUMNS - 1:
             if row <= Game.BOARD_ROWS - 1:
                 if self.board[row][col] == 0:
@@ -101,11 +142,18 @@ class Game:
         raise Exception("illegal location.")
 
     def get_current_player(self):
+        """
+        a method returning the current player who suppose to play up next.
+        """
         return Game.BOARD_PROTOCOL[self.turn]
 
     def is_legal(self, column):
+        """
+        a method receiving a column and returning whether a new disc
+        can be placed there.
+        """
         if column > Game.BOARD_COLUMNS - 1:
-            return
+            return False
         column_data = [row[column] for row in self.board]
         if column_data.count(Game.BOARD_PROTOCOL['empty']) <= 0:
             return False
@@ -114,9 +162,10 @@ class Game:
         return True
 
     def next_turn(self):
+        """
+        a method returning the player who plays the next turn.
+        """
         if Game.BOARD_PROTOCOL[self.turn] == 1:
             self.turn = Game.TURNS[2]
         elif Game.BOARD_PROTOCOL[self.turn] == 2:
             self.turn = Game.TURNS[1]
-
-
