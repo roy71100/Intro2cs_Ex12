@@ -1,14 +1,24 @@
+from random import randint
+
 class AI:
-    def __init__(self, game, player):
+    """
+    a class representing an AI object which plays 4 in a row.
+    """
+    def __init__(self, game):
+        """
+        the initializng method of the AI, which gets a game object.
+        """
         self.game = game
-        self.number = player
 
     def find_legal_move(self, timeout=None):
+        """
+        a method which finds a legal move which the AI can do.
+        """
         if self.game.get_winner() is None:
-            for i in range(0, len(self.game[0])):
-                if self.game.get_player_at(0, i) is None:
-                    return i
-
+            guess = randint(0,len(self.game.board[0]))
+            while self.game.get_player_at(0, guess) is not None
+                guess = randint(0,len(self.game.board[0]))
+            return guess
         raise Exception("No possible AI moves")
 
     def get_last_found_move(self):
