@@ -52,7 +52,7 @@ class Game:
         :return:
         """
         status, coord = self.get_winner_helper()
-        self.game.status = status
+        self.status = status
         return status
 
     def get_winner_helper(self):
@@ -208,6 +208,3 @@ def check_4_in_a_row(list, value):
             count = 0
             coordinates = []
     return False, None
-
-
-
