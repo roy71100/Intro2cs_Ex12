@@ -51,79 +51,98 @@ class Game:
         1 - player one won, 2- player two won, 0 - tie, None - still running.
         :return:
         """
+        status, coord = self.get_winner_helper()
+        self.game.status = status
+        return status
+
+    def get_winner_helper(self):
+        """
+        a method which checks whether there is a winner, and return the answer:
+        1 - player one won, 2- player two won, 0 - tie, None - still running.
+        if there is a winner, it also returns the coordinates of the winning
+        streak, otherwise, return None.
+        winner: status, [coordinates]
+        tie/running: status, None
+        """
         # check rows
         for i in range(Game.BOARD_ROWS):
             seq = self.return_sequence(1, 0, 0, i)
             for p in Game.BOARD_PROTOCOL.keys():
                 if p != "empty":
-                    if seq.count(Game.BOARD_PROTOCOL[p]) >= 4:
-                        self.status = Game.GAME_STATUS[p]
-                        return self.status
+                    result, coord = check_4_in_a_row(seq,
+                                                     Game.BOARD_PROTOCOL[p])
+                    if result:
+                        return Game.GAME_STATUS[p], coord
 
         # check columns
         for i in range(Game.BOARD_COLUMNS):
             seq = self.return_sequence(0, 1, i, 0)
             for p in Game.BOARD_PROTOCOL.keys():
                 if p != "empty":
-                    if seq.count(Game.BOARD_PROTOCOL[p]) >= 4:
-                        self.status = Game.GAME_STATUS[p]
-                        return self.status
+                    result, coord = check_4_in_a_row(seq,
+                                                     Game.BOARD_PROTOCOL[p])
+                    if result:
+                        return Game.GAME_STATUS[p], coord
 
         # check diagonal /
         for i in range(Game.BOARD_COLUMNS - 3):
             seq = self.return_sequence(1, -1, i, Game.BOARD_ROWS - 1)
             for p in Game.BOARD_PROTOCOL.keys():
                 if p != "empty":
-                    if seq.count(Game.BOARD_PROTOCOL[p]) >= 4:
-                        self.status = Game.GAME_STATUS[p]
-                        return self.status
+                    result, coord = check_4_in_a_row(seq,
+                                                     Game.BOARD_PROTOCOL[p])
+                    if result:
+                        return Game.GAME_STATUS[p], coord
 
         for i in range(Game.BOARD_ROWS - 2, 2, -1):
             seq = self.return_sequence(1, -1, 0, i)
             for p in Game.BOARD_PROTOCOL.keys():
                 if p != "empty":
-                    if seq.count(Game.BOARD_PROTOCOL[p]) >= 4:
-                        self.status = Game.GAME_STATUS[p]
-                        return self.status
+                    result, coord = check_4_in_a_row(seq,
+                                                     Game.BOARD_PROTOCOL[p])
+                    if result:
+                        return Game.GAME_STATUS[p], coord
 
         # check diagonal \
         for i in range(Game.BOARD_COLUMNS - 1, 2, -1):
             seq = self.return_sequence(-1, -1, i, Game.BOARD_ROWS - 1)
             for p in Game.BOARD_PROTOCOL.keys():
                 if p != "empty":
-                    if seq.count(Game.BOARD_PROTOCOL[p]) >= 4:
-                        self.status = Game.GAME_STATUS[p]
-                        return self.status
+                    result, coord = check_4_in_a_row(seq,
+                                                     Game.BOARD_PROTOCOL[p])
+                    if result:
+                        return Game.GAME_STATUS[p], coord
 
         for i in range(Game.BOARD_ROWS - 2, 2, -1):
             seq = self.return_sequence(-1, -1, Game.BOARD_COLUMNS - 1, i)
             for p in Game.BOARD_PROTOCOL.keys():
                 if p != "empty":
-                    if seq.count(Game.BOARD_PROTOCOL[p]) >= 4:
-                        self.status = Game.GAME_STATUS[p]
-                        return self.status
+                    result, coord = check_4_in_a_row(seq,
+                                                     Game.BOARD_PROTOCOL[p])
+                    if result:
+                        return Game.GAME_STATUS[p], coord
 
         # checking whether its a tie.
         if sum(list(filter(lambda x: x == Game.BOARD_PROTOCOL['empty'],
                            [item for sublist in self.board for item in
                             sublist]))) > 0:
-            self.status = Game.GAME_STATUS['tie']
-            return self.status
+            return Game.GAME_STATUS['tie'], None
 
-        #game still running
-        return Game.GAME_STATUS['running']
+        # game still running
+        return Game.GAME_STATUS['running'], None
 
     def return_sequence(self, delta_x, delta_y, x, y):
         """
         a method receiving a direction (represented by delta_x and delta_y) and
         a starting position, and return a list of values encountered upon
-        advancing that direction in the board matrix.
+        advancing that direction in the board matrix:
+        [value,coordinates] when coordinates = (x,y).
         """
         seq = []
         while (
                     (Game.BOARD_COLUMNS - 1 >= x >= 0) and (
                                 0 <= y <= Game.BOARD_ROWS - 1)):
-            seq.append(self.board[y][x])
+            seq.append([self.board[y][x], (x, y)])
             x += delta_x
             y += delta_y
         return seq
@@ -169,3 +188,26 @@ class Game:
             self.turn = Game.TURNS[2]
         elif Game.BOARD_PROTOCOL[self.turn] == 2:
             self.turn = Game.TURNS[1]
+
+
+def check_4_in_a_row(list, value):
+    """
+    a method receiving a list with values and cordinates, return True if there
+    are 4 elemments in a row with the specified value, and their coordinates.
+    False and None otherwise
+    """
+    coordinates = []
+    count = 0
+    for e in list:
+        if e[0] == value:
+            count += 1
+            coordinates.append(e[1])
+            if count >= 4:
+                return True, coordinates
+        else:
+            count = 0
+            coordinates = []
+    return False, None
+
+
+
