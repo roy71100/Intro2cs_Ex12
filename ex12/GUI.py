@@ -5,7 +5,7 @@ X_START = 100
 Y_START = 300
 SIZE = 50
 COLORS = {1: "red", 2: "blue", -1: "white"}
-TIME_LEAP = 1000
+TIME_LEAP = 2000
 
 import tkinter as tk
 import game as game
@@ -172,10 +172,8 @@ class GUI:
             self._results.configure(text=str(self.turn) + " turn ")
             winner, list_of_cord = self._game.get_winner_helper()  # check if the
             # game ended and how
-            print(winner)
             if not winner is None:
                 self.turn = -1
-                print(winner)
                 if winner == 0:
                     self._results.configure(text="game ended in tie")
                 else:
@@ -184,7 +182,7 @@ class GUI:
                     for i in list_of_cord:
                         self.paint(NUM_OF_ROW - i[1] - 1, i[0])  #
                         # paint win sequence
-                    self.end_option()
+                self.end_option()
         except Exception as e:  # illegal move
            messagebox.showerror("Error", str(e))
 
@@ -218,8 +216,5 @@ class GUI:
         self._game = game.Game()
         self._column_high = [0] * NUM_OF_COL
 
-root = tk.Tk()
-x = GUI(root)
-root.mainloop()
 
 
