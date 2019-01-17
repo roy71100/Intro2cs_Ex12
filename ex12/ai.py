@@ -1,10 +1,12 @@
 from random import randint
-import game as game
+from . import game
+
 
 class AI:
     """
     a class representing an AI object which plays 4 in a row.
     """
+
     def __init__(self, game):
         """
         the initializng method of the AI, which gets a game object.
@@ -18,7 +20,7 @@ class AI:
         if self.game.get_winner() is None:
             guess = randint(0, game.Game.BOARD_COLUMNS - 1)
             while self.game.get_player_at(0, guess) is not None:
-                guess = randint(0,game.Game.BOARD_COLUMNS - 1)
+                guess = randint(0, game.Game.BOARD_COLUMNS - 1)
             return guess
         raise Exception("No possible AI moves")
 
