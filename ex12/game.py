@@ -123,7 +123,7 @@ class Game:
                         return Game.GAME_STATUS[p], coord
 
         # checking whether its a tie.
-        if len((filter(lambda x: x == Game.BOARD_PROTOCOL['empty'],
+        if len(list(filter(lambda x: x == Game.BOARD_PROTOCOL['empty'],
                            [item for sublist in self.board for item in
                             sublist]))) == 0:
             return Game.GAME_STATUS['tie'], None
