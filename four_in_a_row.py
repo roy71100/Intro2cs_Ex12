@@ -1,3 +1,7 @@
+import ex12.GUI as gui
+import tkinter as tk
 
 if __name__ == '__main__':
-    print("ochi")
+    root = tk.Tk()
+    gui.GUI(root)
+    root.mainloop()
